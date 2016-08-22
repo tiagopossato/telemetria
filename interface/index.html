@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <div class="col s12 m12 l3">
+      <div class="col s12 m12 l4">
         <div class="row">
           <div class="col s8 m6 l12">
             <div class="gauge" id="wattimetro"></div>
@@ -45,47 +45,59 @@
         </div>
       </div>
 
-      <div class="col s12 m12 l4">
+      <div class="col s12 m12 l3">
         <div class="row">
-          <a class="waves-effect waves-light btn-flat" onclick="conecta()" id="botao" name="btn-conectar" value="Conectar">Conectar</a>
 
-          <a type="button" class="waves-effect waves-light btn-flat" onclick="send('{\'cod\':1,\'int\':175}')">Ler dados</a>
-          <a type="button" class="waves-effect waves-light btn-flat" onclick="send('{\'cod\':1}')">Parar</a>
-
-          <div class="card blue-grey darken-1">
-            <div class="card-content">
-              <span class="card-title">Gravar arquivo</span>
-              <form id="formArquivo">
-                <b>Nome do arquivo</b><input type="text" id="arquivo">
-                <button type="submit" class="btn waves-effect waves-light green">Enviar</button>
-              </form>
-              </br>
-              <button type="button" class="btn waves-effect waves-light red" onclick="send('{\'cod\':2}')">Parar de gravar</button>
-
+          <div class="col s12 m6 l12">
+            <div class="row">
+              <a type="button" class="waves-effect waves-light btn-large col s12 m12 l12" onclick="conecta()" id="botao" name="btn-conectar" value="Conectar">Conectar</a>
+            </div>
+            <div class="row">
+              <a type="button" class="waves-effect waves-light btn-large col s12 m12 l12" onclick="send('{\'cod\':1,\'int\':175}')">Ler dados</a>
+            </div>
+            <div class="row">
+              <a type="button" class="waves-effect waves-light btn-large col s12 m12 l12" onclick="send('{\'cod\':1}')">Parar</a>
             </div>
           </div>
 
-          <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Enviar comandos</span>
-              <form id="formEnviar">
-                <input type="text" id="enviar">
-                <button class="btn waves-effect waves-light" type="submit">Enviar
-			<i class="material-icons right">send</i>
-		</button>
-              </form>
-            </div>
-          </div>
-
-          <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Mensagens</span>
-              <div class="row">
-                <textarea rows="10" id="areaMensagens" disabled=""></textarea>
+          <div class="col s12 m6 l12">
+            <div class="card blue-grey small">
+              <div class="card-content">
+                <span class="card-title">Gravar arquivo</span>
+                <form id="formArquivo">
+                  <b>Nome do arquivo</b><input type="text" id="arquivo">
+                  <button type="submit" class="btn waves-effect waves-light green">Enviar</button>
+                </form>
+                </br>
+                <button type="button" class="btn waves-effect waves-light red" onclick="send('{\'cod\':2}')">Parar de gravar</button>
               </div>
             </div>
           </div>
 
+          <div class="col s12 m6 l12">
+            <div class="card blue-grey small">
+              <div class="card-content">
+                <span class="card-title">Enviar comandos</span>
+                <form id="formEnviar">
+                  <input type="text" id="enviar">
+                  <button class="btn waves-effect waves-light btn-small" type="submit">Enviar
+			<i class="material-icons right">send</i>
+		</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="col s12 m6 l12">
+            <div class="card blue-grey small">
+              <div class="card-content">
+                <span class="card-title">Mensagens</span>
+                <div class="row">
+                  <textarea id="areaMensagens" rows="10" disabled=""></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -114,9 +126,7 @@
 
   <footer class="page-footer red">
     <div class="footer-copyright green">
-      <div class="container">
-        Powered by <a class="orange-text text-lighten-3" target="_blank" href="http://www.videira.ifc.edu.br">IFC Videira</a>
-      </div>
+      Powered by <a class="orange-text text-lighten-3" target="_blank" href="http://www.videira.ifc.edu.br">IFC Videira</a>
     </div>
   </footer>
 
@@ -132,9 +142,11 @@
 
   <script type="text/javascript" src="assets/js/configuraGauges.js"></script>
 
-  <script type="text/javascript" src="assets/js/script.js"></script>
+
   <script type="text/javascript" src="assets/js/telemetria.js"></script>
   <script type="text/javascript" src="assets/js/configuraAcoes.js"></script>
+
+  <script type="text/javascript" src="assets/js/script.js"></script>
 
   <script src="assets/js/init.js"></script>
 
