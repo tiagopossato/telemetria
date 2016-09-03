@@ -33,4 +33,6 @@ $(document).ready(function() {
         log(message);
         oldErrorLog.apply(console, arguments);
     };
+    
+    $("#enviarComandos").hide();
 });
