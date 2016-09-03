@@ -18,52 +18,50 @@
   <div class="section">
     <div class="row">
 
-      <div class="col s12 m12 l12">
+      <div class="col s12 m12 l5">
         <div class="row">
-
-          <div class="col s6 m6 l6">
-            <div class="row">
-              <div class="col s12 m12 l12">
-                <div class="gauge" id="velocimetro"></div>
-              </div>
-              <div class="col s12 m12 l12">
-                <div style="text-align: center">
-                  <span><b>Hodômetro: </b>&nbsp</span>
-                  <span id="hodometro"></span>
-                  <span>&nbsp km</span>
-                </div>
-              </div>
-            </div>
+          <div class="col s8 m6 l12">
+            <div class="gauge" id="velocimetro"></div>
           </div>
-          <div class="col s6 m6 l6">
-            <div class="gauge" id="wattimetro"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col s12 m12 l12">
-        <div class="row">
-          <div class="col s4 m4 l2">
+          <div class="col s4 m4 l5">
             <div class="gauge" id="medidorTensao"></div>
           </div>
-          <div class="col s4 m4 l2">
+          <div class="col s4 m4 l5">
             <div class="gauge" id="medidorCorrente"></div>
           </div>
-          <div class="col s4 m4 l2">
-            <div class="gauge" id="consumoInstantaneo"></div>
-          </div>
-          <div class="col s4 m4 l2">
-            <div class="gauge" id="autonomia"></div>
-          </div>
-          <div class="col s4 m4 l2">
-            <div class="gauge" id="temperaturaBaterias"></div>
-          </div>
-          <div class="col s4 m4 l2">
-            <div class="gauge" id="temperaturaCockpit"></div>
-          </div>
-
         </div>
       </div>
+
+      <div class="col s12 m12 l5">
+        <div class="row">
+          <div class="col s8 m6 l12">
+            <div class="gauge" id="wattimetro"></div>
+          </div>
+          <div class="col s4 m4 l5">
+            <div class="gauge" id="temperaturaBaterias"></div>
+          </div>
+          <div class="col s4 m4 l5">
+            <div class="gauge" id="temperaturaCockpit"></div>
+          </div>
+        </div>
+      </div>
+      
+      
+        <div class="col s12 m4 l4">
+    <div style="text-align: left">
+      <span><b>Consumo instantâneo: </b>&nbsp</span>
+      <span id="consumoInstantaneo"></span>
+      <span>&nbsp W/km</span>
+    </div>
+    <div style="text-align: left">
+      <span><b>'Autonomia': </b>&nbsp</span>
+      <span id="autonomia"></span>
+      <span>&nbsp km/kW</span>
+    </div>
+  </div>
+
+
+
 
 
       <div class="col s12 m12 l12">
@@ -71,27 +69,24 @@
 
           <div class="col s12 m12 l12">
 
-            <div class="col s6 m3 l3">
+            <div class="col s3 m3 l3">
               <a type="button" class="waves-effect waves-light btn-large col s10 m10 l10" onclick="conecta()" id="botao" name="btn-conectar" value="Conectar">Conectar</a>
             </div>
-            <div class="col s6 m4 l3">
+            <div class="col s4 m4 l3">
               <a type="button" class="waves-effect waves-light btn-large col s10 m10 l10" onclick="send('{\'cod\':1,\'int\':175}')">Ler dados</a>
             </div>
-            <div class="col s6 m4 l3">
+            <div class="col s4 m4 l3">
               <a type="button" class="waves-effect waves-light btn-large col s10 m10 l10" onclick="send('{\'cod\':1}')">Parar</a>
             </div>
           </div>
 
-          <div class="col s12 m12 l12">
+          <div class="col s11 m11 l11">
             <div class="card blue-grey small">
               <div class="card-content">
                 <span class="card-title">Gravar arquivo</span>
-                <form id="formArquivo" action="">
+                <form id="formArquivo">
                   <b>Nome do arquivo</b><input type="text" id="arquivo">
-                  <button type="submit" class="btn waves-effect waves-light green">Enviar
-                  <i class="material-icons right">send</i>
-                  </button>
-
+                  <button type="submit" class="btn waves-effect waves-light green">Enviar</button>
                 </form>
                 </br>
                 <button type="button" class="btn waves-effect waves-light red" onclick="send('{\'cod\':2}')">Parar de gravar</button>
@@ -106,27 +101,25 @@
     <!--FIM DA ROW-->
 
     <div class="row">
-
-      <div id="cardMensagens" class="col s12 m12 l12">
-        <div class="card blue-grey">
+      <div class="col s11 m11 l11">
+        <div class="card blue-grey small">
           <div class="card-content">
             <span class="card-title">Mensagens</span>
-            <div class="col s12">
-              <textarea id="areaMensagens" class="materialize-textarea" style="color: black;" disabled=""></textarea>
+            <div class="row">
+              <textarea id="areaMensagens" rows="10" disabled=""></textarea>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="col s12 m12 l12">
+      <div class="col s11 m11 l11">
         <div class="card blue-grey small">
           <div class="card-content">
-
             <span class="card-title">Enviar comandos</span>
             <form id="formEnviar">
               <input type="text" id="enviar">
-              <button class="btn waves-effect waves-light btn-small" type="submit"> Enviar
-			<i class="material-icons right">send</i>
+              <button class="btn waves-effect waves-light btn-small" type="submit">
+			<i class="material-icons right"> Enviar </i>
 		</button>
             </form>
           </div>
@@ -151,25 +144,22 @@
   <!-- JS - JustGage -->
   <script type="text/javascript" src="assets/js/justgage.js"></script>
   <script type="text/javascript" src="assets/js/raphael-2.1.4.min.js"></script>
-
-
   <!-- JS - Meus Script -->
 
   <script type="text/javascript" src="assets/js/configuraGauges.js"></script>
 
 
-  <script type="text/javascript" src="assets/js/script.js"></script>
-
   <script type="text/javascript" src="assets/js/telemetria.js"></script>
   <script type="text/javascript" src="assets/js/configuraAcoes.js"></script>
 
-
+  <script type="text/javascript" src="assets/js/script.js"></script>
 
   <script src="assets/js/init.js"></script>
 
-  <!--<div class="hiddendiv common"></div>-->
-  <!--<div style="left: 0px;" class="drag-target"></div>-->
-
+  <div class="hiddendiv common"></div>
+  <div style="left: 0px;" class="drag-target"></div>
+  </div>
+  </div>
 </body>
 
 </html>

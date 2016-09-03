@@ -150,3 +150,53 @@ var wattimetro = new JustGage({
         }]
 });
 
+
+var consumoInstantaneo = new JustGage({
+    id: "consumoInstantaneo",
+    value: 0,
+    min: 0,
+    max: 1500,
+    title: "Consumo Instantâneo",
+    label: "W/km",
+    pointer: true,
+    relativeGaugeSize: true,
+	decimals: true,
+    customSectors: [{
+            color: '#31EB41',
+            lo: 0,
+            hi: 200
+        }, {
+            color: '#318BEB',
+            lo: 201,
+            hi: 500
+        }, {
+            color: '#ff0000',
+            lo: 501,
+            hi: 1500
+        }]
+});
+
+var autonomia = new JustGage({
+    id: "autonomia",
+    value: 0,
+    min: 0,
+    max: 1500,
+    title: "Autonomia",
+    label: "km/kW",
+    pointer: true,
+    relativeGaugeSize: true,
+	decimals: true,
+    customSectors: [{
+            color: '#31EB41',
+            lo: 0,
+            hi: 200
+        }, {
+            color: '#318BEB',
+            lo: 201,
+            hi: 500
+        }, {
+            color: '#ff0000',
+            lo: 501,
+            hi: 1500
+        }]
+});

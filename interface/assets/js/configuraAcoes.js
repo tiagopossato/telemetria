@@ -1,36 +1,36 @@
-(function() {
-    var oldLog = console.log;
-    console.log = function(message) {
-        log(message, true);
-        oldLog.apply(console, arguments);
-    };
-})();
-
-(function() {
-    var oldErrorLog = console.error;
-    console.error = function(message) {
-        log(message, true);
-        oldErrorLog.apply(console, arguments);
-    };
-})();
-
-var log = function(dados, painel) {
-    if (!painel) {
-        console.log(dados);
-        return;
-    }
-    $("#areaMensagens").value += dados + "\n";
-    $("#areaMensagens").scrollTop = $("#areaMensagens").scrollHeight;
+var log = function(dados) {
+    // if (!painel) {
+    //     console.log(dados);
+    //     return;
+    // }
+    $('#areaMensagens').append(dados + "\n");
+    $('#areaMensagens').trigger('autoresize');
 };
 
-$('#formEnviar').submit(function(e) {
+$(document).ready(function() {
+    
+    $('#formEnviar').submit(function(e) {
         // impede o envio do form
-    e.preventDefault();
-    send($('#enviar').value);
-});
+        e.preventDefault();
+        send($('#enviar').value);
+    });
 
-$('#formArquivo').submit('submit', function(e) {
-    send('{\"cod\":2,\"arq\":' + $('#arquivo').value + '}');
-    // impede o envio do form
-    e.preventDefault();
+    $('#formArquivo').submit( function(e) {
+        send('{\"cod\":2,\"arq\":' + $('#arquivo').value + '}');
+        // impede o envio do form
+        e.preventDefault();
+    });
+
+
+    var oldLog = console.log;
+    console.log = function(message) {
+        log(message);
+        oldLog.apply(console, arguments);
+    };
+
+    var oldErrorLog = console.error;
+    console.error = function(message) {
+        log(message);
+        oldErrorLog.apply(console, arguments);
+    };
 });
