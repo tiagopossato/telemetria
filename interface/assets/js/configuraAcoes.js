@@ -7,20 +7,50 @@ var log = function(dados) {
     $('#areaMensagens').trigger('autoresize');
 };
 
+function toggleFullScreen() {
+    if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+        (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+        if (document.documentElement.requestFullScreen) {
+            document.documentElement.requestFullScreen();
+        }
+        else if (document.documentElement.mozRequestFullScreen) {
+            document.documentElement.mozRequestFullScreen();
+        }
+        else if (document.documentElement.webkitRequestFullScreen) {
+            document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+    }
+    else {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+    }
+}
+
 $(document).ready(function() {
-    
-    $('#formEnviar').submit(function(e) {
-        // impede o envio do form
-        e.preventDefault();
-        send($('#enviar').value);
+
+    $('#botaoGravar').click(function(e) {
+        var texto = $("#arquivo").val();
+        if (texto === "@") {
+            $("#enviarComandos").show();
+            $("#arquivo").val("");
+            return;
+        }
+        $("#arquivo").val("");
     });
 
-    $('#formArquivo').submit( function(e) {
-        send('{\"cod\":2,\"arq\":' + $('#arquivo').value + '}');
+    $('#botaoEnviar').click(function(e) {
+        send('{\"cod\":2,\"arq\":' + $('#enviar').val() + '}');
         // impede o envio do form
-        e.preventDefault();
     });
 
+    $("#botaoTelaCheia").click(toggleFullScreen);
 
     var oldLog = console.log;
     console.log = function(message) {
@@ -33,6 +63,6 @@ $(document).ready(function() {
         log(message);
         oldErrorLog.apply(console, arguments);
     };
-    
+
     $("#enviarComandos").hide();
 });
