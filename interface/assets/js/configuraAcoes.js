@@ -52,6 +52,8 @@ $(document).ready(function() {
 
     $("#botaoTelaCheia").click(toggleFullScreen);
 
+    $("#botaoConectar").click(conecta);
+
     var oldLog = console.log;
     console.log = function(message) {
         log(message);
@@ -65,4 +67,5 @@ $(document).ready(function() {
     };
 
     $("#enviarComandos").hide();
+    //conecta();
 });

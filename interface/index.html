@@ -53,7 +53,7 @@
             <div class="gauge" id="consumoInstantaneo"></div>
           </div>
           <div class="col s4 m4 l2">
-            <div class="gauge" id="autonomia"></div>
+            <div class="gauge" id="autonomiaInstantanea"></div>
           </div>
           <div class="col s4 m4 l2">
             <div class="gauge" id="temperaturaBaterias"></div>
@@ -73,13 +73,13 @@
           <div class="col s12 m6 l6">
 
             <div class="col s6 m6 l3">
-              <a type="button" class="waves-effect waves-light btn" onclick="conecta()" id="botao" name="btn-conectar" value="Conectar">Conectar</a>
+              <a type="button" class="waves-effect waves-light btn" id="botaoConectar">Conectar</a>
             </div>
             <div class="col s6 m6 l3">
-              <a type="button" class="waves-effect waves-light btn" onclick="send('{\'cod\':1,\'int\':175}')">Ler dados</a>
+              <a type="button" class="waves-effect waves-light btn" onclick="send(\'1:175\')">Ler dados</a>
             </div>
             <div class="col s6 m6 l3">
-              <a type="button" class="waves-effect waves-light btn" onclick="send('{\'cod\':1}')">Parar</a>
+              <a type="button" class="waves-effect waves-light btn" onclick="send(\'1:\')">Parar</a>
             </div>
             <div class="col s6 m6 l3">
               <a type="button" class="waves-effect waves-light btn" id="botaoTelaCheia">Tela Cheia</a>

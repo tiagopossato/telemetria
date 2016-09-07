@@ -6,7 +6,7 @@ var hodometro = new Odometer({
 
 //reescreve função para divir por 1000 o valor mostrado na tela
 var oldHod = hodometro.update;
-hodometro.update = function(valor) {
+hodometro.refresh = function(valor) {
     valor = valor / 1000;
     oldHod.apply(hodometro, arguments);
 };
@@ -189,12 +189,12 @@ var consumoInstantaneo = new JustGage({
     }]
 });
 
-var autonomia = new JustGage({
-    id: "autonomia",
+var autonomiaInstantanea = new JustGage({
+    id: "autonomiaInstantanea",
     value: 0,
     min: 0,
     max: 1500,
-    title: "Autonomia",
+    title: "Autonomia Instantânea",
     label: "km/kW",
     pointer: true,
     relativeGaugeSize: true,
