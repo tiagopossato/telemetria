@@ -41,12 +41,14 @@ $(document).ready(function() {
             $("#enviarComandos").show();
             $("#arquivo").val("");
             return;
+        }else{
+            send('2:'+texto);
         }
         $("#arquivo").val("");
     });
 
     $('#botaoEnviar').click(function(e) {
-        send('{\"cod\":2,\"arq\":' + $('#enviar').val() + '}');
+        send($('#enviar').val());
         // impede o envio do form
     });
 
