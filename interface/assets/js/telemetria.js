@@ -42,9 +42,9 @@ function send(msg) {
 }
 
 function trataDadosRecebidos(e) {
-    log('Recebido: ' + e.data.substring(0, e.data.length - 1));
+    //log('Recebido: ' + e.data);
     try {
-        var dados = JSON.parse(e.data.substring(0, e.data.length - 1));
+        var dados = JSON.parse(e.data);
         if (dados['01'] != null) {
             tensao = parseFloat(dados['01'])
             medidorTensao.refresh(tensao);
