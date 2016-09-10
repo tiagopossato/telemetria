@@ -58,17 +58,17 @@ function trataDadosRecebidos(e) {
             velocimetro.refresh(velocidade);
         }
         if (dados['04'] != null) {
-            var distancia = parseFloat(dados['04']);
+            var distancia = parseInt(dados['04']);
             hodometro.refresh(distancia);
         }
 
         if (dados['05'] != null) {
-            var temp = parseFloat(dados['04']);
+            var temp = parseFloat(dados['05']);
             temperaturaBaterias.refresh(temp);
         }
 
         if (dados['06'] != null) {
-            var temp = parseFloat(dados['04']);
+            var temp = parseFloat(dados['06']);
             temperaturaCockpit.refresh(temp);
         }
 
