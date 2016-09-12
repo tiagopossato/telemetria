@@ -1,12 +1,4 @@
-/*
-   WebSocketServer_LEDcontrol.ino
-
-    Created on: 26.11.2015
-
-*/
-
 #include <Arduino.h>
-
 #include <ESP8266WiFi.h>
 #include <WebSocketsServer.h>
 #include <Hash.h>
