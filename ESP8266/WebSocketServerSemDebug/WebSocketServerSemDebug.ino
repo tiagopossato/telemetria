@@ -3,7 +3,6 @@
 #include <WebSocketsServer.h>
 #include <Hash.h>
 
-//#define DEBUG
 const char *ssid = "carro";
 const char *password = "";
 
@@ -18,17 +17,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
   switch (type) {
     case WStype_DISCONNECTED:
       numClient = 255;
-#ifdef DEBUG
-      Serial.printf("[%u] Disconnected!\n", num);
-#endif
       break;
-
     case WStype_CONNECTED: {
         numClient = num;
-#ifdef DEBUG
-        IPAddress ip = webSocket.remoteIP(num);
-        Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
-#endif
         // send message to client
         webSocket.sendTXT(num, "{\"20\":\"Connected\"}");
       }
@@ -40,26 +31,18 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
 }
 
 void envia() {
-  if (numClient == 255) return;
+//  if (numClient == 255) {
+//    inputString = "";
+//    return;
+//  }
   size_t tam = inputString.length();
   inputString.toCharArray(saida, tam + 1);
-
-#ifdef DEBUG
-  Serial.println(inputString);
-  Serial.println(saida);
-#endif
-
   webSocket.sendTXT(numClient, saida, tam);
   inputString = "";
 }
 
 void setup() {
   Serial.begin(9600);
-#ifdef DEBUG
-  Serial.println();
-  Serial.println();
-  Serial.println();
-#endif
   inputString.reserve(128);
 
   /**
@@ -69,19 +52,11 @@ void setup() {
      @param channel       WiFi channel number, 1 - 13.
      @param ssid_hidden   Network cloaking (0 = broadcast SSID, 1 = hide SSID)
   */
-  WiFi.softAP(ssid, password, 3, 0);
-  for (uint8_t t = 4; t > 0; t--) {
-#ifdef DEBUG
-    Serial.printf("[SETUP] BOOT WAIT %d...\n", t);
-    Serial.flush();
-#endif
+  WiFi.softAP(ssid, password, 14, 0);
+
+  for (uint8_t t = 3; t > 0; t--) {
     delay(1000);
   }
-
-#ifdef DEBUG
-  IPAddress myIP = WiFi.softAPIP();
-  Serial.println(myIP);
-#endif
 
   // start webSocket server
   webSocket.begin();
@@ -89,10 +64,6 @@ void setup() {
 
 }
 
-#ifdef DEBUG
-unsigned long previousMillis = 0;
-const long interval = 100;
-#endif
 
 void loop() {
   webSocket.loop();
@@ -104,17 +75,5 @@ void loop() {
       inputString += inChar;
     }
   }
-
-#ifdef DEBUG
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
-    inputString = "";
-    inputString = "{\"01\":\"";
-    inputString += String(map(analogRead(A0), 0, 1024, 0, 50));
-    inputString += "\"}";
-    envia();
-  }
-#endif
 }
 

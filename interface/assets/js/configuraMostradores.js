@@ -1,13 +1,12 @@
 var hodometro = new Odometer({
     el: document.getElementById('hodometro'),
-    format: '( ddd),ddd',
+    format: '( ddd),dd',
     theme: 'car'
 });
 
-//reescreve função para divir por 1000 o valor mostrado na tela
+//reescreve função para manter o mesmo nome dos gauges
 var oldHod = hodometro.update;
 hodometro.refresh = function(valor) {
-    valor = valor / 1000;
     oldHod.apply(hodometro, arguments);
 };
 

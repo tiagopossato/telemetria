@@ -42,8 +42,11 @@ byte codigo = 0;
 boolean salvarDados = false;
 boolean enviarDados = false;
 
+void(* resetFunc) (void) = 0;//declare reset function at address 0
+
+
 void setup() {
-  cfg.raioRoda = 0.34;
+  cfg.raioRoda = 0.255;
   cfg.qtdPulsos = 4;
   cfg.intervaloLeitura = 100;
 
@@ -149,12 +152,12 @@ void gravaDados() {
 
 void incrementaPulso() {
   pulsos++;
+  dados.hodometro += (2.0 * 3.1415 * cfg.raioRoda) / cfg.qtdPulsos;
 }
 
 void contarPulsos() {
   noInterrupts();
   dados.velocidade = ((2.0 * 3.1415 * cfg.raioRoda * pulsos) / (cfg.qtdPulsos)) * 3.6;
-  dados.hodometro += (2.0 * 3.1415 * cfg.raioRoda * pulsos) / cfg.qtdPulsos;
   pulsos = 0;
   interrupts();
 }
@@ -236,6 +239,9 @@ void extraiCodigo(String entrada) {
         salvarDados = true;
         break;
       }
+    case 99:
+      resetFunc();
+      break;
     default: {
         enviar("20", "Codigo nao reconhecido!");
         break;

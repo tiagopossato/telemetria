@@ -17,6 +17,7 @@ function conecta() {
     ws.onopen = function(e) {
         log('Conectado', true);
         $("#botaoConectar").hide('slow');
+	send('1:175');
     };
 
     ws.onclose = function(e) {
@@ -58,7 +59,7 @@ function trataDadosRecebidos(e) {
             velocimetro.refresh(velocidade);
         }
         if (dados['04'] != null) {
-            var distancia = parseInt(dados['04']);
+            var distancia = parseFloat(dados['04']);
             hodometro.refresh(distancia);
         }
 
@@ -80,8 +81,9 @@ function trataDadosRecebidos(e) {
         if (!isNaN(tensao) && !isNaN(corrente)) {
             wattimetro.refresh(tensao * corrente);
             //calcula consumo instantâneo
-            if (!isNaN(velocidade)) {
-                consumoInstantaneo.refresh = (tensao * corrente / velocidade);
+            if (!isNaN(velocidade) && velocidade > 0) {
+                consumoInstantaneo.refresh(tensao * corrente / velocidade);
+		autonomiaInstantanea.refresh(velocidade / (tensao * corrente));
             }
         }
     }

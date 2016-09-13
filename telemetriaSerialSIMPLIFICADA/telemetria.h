@@ -5,7 +5,7 @@ struct {
   float temperaturaBaterias;
   float temperaturaCockpit;
   long velocidade; //velocidade calculada do carro
-  long hodometro; //armazena a quantidade de metros percorridos
+  double hodometro; //armazena a quantidade de metros percorridos
 } dados;
 
 //estrutura com as configuracoes do controlador
