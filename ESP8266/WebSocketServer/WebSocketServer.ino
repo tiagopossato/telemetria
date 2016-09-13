@@ -3,21 +3,21 @@
 #include <WebSocketsServer.h>
 #include <Hash.h>
 
-#define DEBUG
-const char *ssid = "TelemetriaNova";
-const char *password = "12345678";
+//#define DEBUG
+const char *ssid = "carro";
+const char *password = "";
 
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 char saida[128];
 
 WebSocketsServer webSocket = WebSocketsServer(81);
-uint8_t numClient = -1;
+uint8_t numClient = 255;
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght) {
   switch (type) {
     case WStype_DISCONNECTED:
-      numClient = -1;
+      numClient = 255;
 #ifdef DEBUG
       Serial.printf("[%u] Disconnected!\n", num);
 #endif
@@ -40,7 +40,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
 }
 
 void envia() {
-  if (numClient == -1) return;
+  if (numClient == 255) return;
   size_t tam = inputString.length();
   inputString.toCharArray(saida, tam + 1);
 
@@ -62,7 +62,14 @@ void setup() {
 #endif
   inputString.reserve(128);
 
-  WiFi.softAP(ssid, password, 1, 0);
+  /**
+     Set up an access point
+     @param ssid          Pointer to the SSID (max 63 char).
+     @param passphrase    (for WPA2 min 8 char, for open use NULL)
+     @param channel       WiFi channel number, 1 - 13.
+     @param ssid_hidden   Network cloaking (0 = broadcast SSID, 1 = hide SSID)
+  */
+  WiFi.softAP(ssid, password, 3, 0);
   for (uint8_t t = 4; t > 0; t--) {
 #ifdef DEBUG
     Serial.printf("[SETUP] BOOT WAIT %d...\n", t);
