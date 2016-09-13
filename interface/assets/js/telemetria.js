@@ -78,7 +78,7 @@ function trataDadosRecebidos(e) {
         }
 
         //Calcula potencia instantânea
-        if (!isNaN(tensao) && !isNaN(corrente)) {
+        if (!isNaN(tensao) && tensao > 0.1 && !isNaN(corrente) && corrente > 0.01) {
             wattimetro.refresh(tensao * corrente);
             //calcula consumo instantâneo
             if (!isNaN(velocidade) && velocidade > 0) {
