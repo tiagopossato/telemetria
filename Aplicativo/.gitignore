@@ -1,0 +1,6 @@
+telemetria/platforms/*
+telemetria/hooks/*
+telemetria/plugins/*
+
+!telemetria/www/*
+telemetria/www/bower_components/*
