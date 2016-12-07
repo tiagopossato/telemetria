@@ -46,8 +46,8 @@ void(* resetFunc) (void) = 0;//Função para resetar o programa
 
 
 void setup() {
-  cfg.raioRoda = 0.255;
-  cfg.qtdPulsos = 4;
+  cfg.raioRoda = 0.261;
+  cfg.qtdPulsos = 8;
   cfg.intervaloLeitura = 100;
 
   Serial.begin(9600);
