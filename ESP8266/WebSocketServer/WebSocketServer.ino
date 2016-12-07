@@ -40,7 +40,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
 }
 
 void envia() {
-  if (numClient == 255) return;
+  if (numClient == 255) {
+    inputString = "";
+    return;
+  }
   size_t tam = inputString.length();
   inputString.toCharArray(saida, tam + 1);
 
@@ -75,7 +78,7 @@ void setup() {
     Serial.printf("[SETUP] BOOT WAIT %d...\n", t);
     Serial.flush();
 #endif
-    delay(1000);
+    delay(500);
   }
 
 #ifdef DEBUG

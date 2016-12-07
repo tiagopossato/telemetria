@@ -42,7 +42,7 @@ byte codigo = 0;
 boolean salvarDados = false;
 boolean enviarDados = false;
 
-void(* resetFunc) (void) = 0;//declare reset function at address 0
+void(* resetFunc) (void) = 0;//Função para resetar o programa
 
 
 void setup() {
@@ -63,8 +63,9 @@ void setup() {
 
   pinMode(pinoRele, OUTPUT);
   // see if the card is present and can be initialized:
-  abreCartao(true);
   chaveiaRele(true);
+  abreCartao(true);
+  
 }
 
 void loop() {
