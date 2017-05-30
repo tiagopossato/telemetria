@@ -1,18 +1,29 @@
-#include <EEPROM.h>
 #include <SPI.h>
 #include <SD.h>
 #include <TimerOne.h>
 #include "telemetria.h"
 
-/*
-   DIFERENCA DE TEMPERATURA PARA ENVIAR PELA SERIAL
-*/
-#define STEP_TEMPERATURA 0.5
+//DIFERENCA DE TEMPERATURA PARA ENVIAR PELA SERIAL
+#define STEP_TEMPERATURA  0.5
+
+//Intervalo para medição de energia em milisegundos
+#define INTERVALO 100
+
+//raio da roda em metros
+#define CIRCUNFERENCIA_RODA 0.261
+
+//Quantidade de imãs na roda
+#define PULSOS  4
+
+#define DISTANCIA_PULSO CIRCUNFERENCIA_RODA/PULSOS
+
+
 /*
    Intervalo para rodar a rotina de verificacao da tensao e atuar no rele
    Em milisegundos
 */
 #define TEMPO_VERIFICACAO_RELE  500
+
 /*
    quantidade de amostras na porta analogica
 */
@@ -24,14 +35,6 @@ const byte pinoTemperaturaBaterias = A3;
 const byte pinoTemperaturaCockpit = A2;
 const byte pinoRele = 2;
 const byte pinoVelocidade = 3;
-long pulsos = 0;
-
-/*
-   Intervalo do timer de medicao de velocidade
-   em microsegundos
-*/
-const long int intervaloMedicaoVelocidade = 1000000;
-
 
 String inputCodigo = "";
 String arquivo;//nome do arquivo
@@ -44,43 +47,97 @@ boolean enviarDados = false;
 
 void(* resetFunc) (void) = 0;//Função para resetar o programa
 
+unsigned long tempoAnterior;
+unsigned long tempoAtual;
 
 void setup() {
-  cfg.raioRoda = 0.261;
-  cfg.qtdPulsos = 8;
-  cfg.intervaloLeitura = 100;
-
+  tempoAnterior = micros();
+  tempoAtual = micros();
   Serial.begin(9600);
   pinMode(pinoVelocidade, INPUT);
-  attachInterrupt(digitalPinToInterrupt(pinoVelocidade), incrementaPulso, FALLING); //FALLING for when the pin goes from high to low.
+  attachInterrupt(digitalPinToInterrupt(pinoVelocidade), calculaVelocidade, FALLING); //FALLING for when the pin goes from high to low.
 
   inputCodigo.reserve(50);
   arquivo.reserve(12);
   arquivo = String("medicoes.csv");
 
-  Timer1.initialize(intervaloMedicaoVelocidade); // em microsegundos
-  Timer1.attachInterrupt( contarPulsos ); // attach the service routine here
+  //Timer1.initialize(100000); // em microsegundos
+  //Timer1.attachInterrupt( calculaEnergia ); // attach the service routine here
 
   pinMode(pinoRele, OUTPUT);
   // see if the card is present and can be initialized:
   chaveiaRele(true);
   abreCartao(true);
-  
+
+  // initialize the LED pin as an output:
+  pinMode(ledVerde, OUTPUT);
+  pinMode(ledVermelho, OUTPUT);
+  // initialize the pushbutton pin as an INPUT_PULLUP:
+  pinMode(botao, INPUT_PULLUP);
+
 }
+
 
 void loop() {
   static unsigned long previousMillisLeitura = 0;
   static unsigned long previousMillisExibicao = 0;
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillisLeitura >= cfg.intervaloLeitura) {
+  if (currentMillis - previousMillisLeitura >= INTERVALO) {
     previousMillisLeitura = currentMillis;
     lerSensores();
+    calculaEnergia();
     if (salvarDados) gravaDados();
   }
   if (currentMillis - previousMillisExibicao >= intervaloEnvio) {
     previousMillisExibicao = currentMillis;
     if (enviarDados) enviaDados();
   }
+
+  if (!digitalRead(botao)) {
+    if (salvarDados) {
+      salvarDados = false;
+      enviar("20", "Parando de gravar...");
+    }
+    else {
+      salvarDados = true;
+      enviar("20", "Gravando...");
+    }
+    digitalWrite(ledVerde, salvarDados);
+  }
+
+  //filtro digital
+  while (!digitalRead(botao))delay(10);
+
+  /*
+    //se o botão for pressionado
+    boolean reading = !digitalRead(botao);
+
+    // se o valor da chave mudou, por ter sido pressionada ou pelo ruído
+    if (reading != lastButtonState) {
+      // reset o temporizador de debounce
+      lastDebounceTime = millis();
+    }
+
+    if ((millis() - lastDebounceTime) > debounceDelay) {
+      //se já passou o tempo de debounce
+      // se o estado do botão mudou
+      //if (reading != salvarDados) {
+      //salvarDados = reading;
+      if (salvarDados) {
+        salvarDados = false;
+      }
+      else {
+        salvarDados = true;
+      }
+      //}
+    }
+
+    // save the reading.  Next time through the loop,
+    // it'll be the lastButtonState:
+    // lastButtonState = reading;
+
+    //  digitalWrite(ledVerde, salvarDados);
+  */
 }
 
 /*
@@ -101,6 +158,29 @@ void serialEvent() {
     }
   }
 }
+
+/**
+   Calcula Energia consumida
+*/
+void calculaEnergia() {
+  static float potenciaAnterior = 0.0;
+  dados.potencia = dados.tensao * dados.corrente;
+  potenciaAnterior = (potenciaAnterior + dados.potencia) / 2.0;
+  dados.energia += potenciaAnterior / 1000.0 / INTERVALO * 3600.0 ;
+}
+
+void calculaVelocidade() {
+  unsigned long intervalo;
+  tempoAtual = micros();
+  intervalo = tempoAtual - tempoAnterior;
+  if (intervalo > 0) {
+    dados.velocidade = DISTANCIA_PULSO / (intervalo * 1000000.0);
+  }
+  tempoAnterior = tempoAtual;
+  dados.hodometro += DISTANCIA_PULSO;
+}
+
+
 
 void lerSensores() {
   long lido = 0;
@@ -132,10 +212,12 @@ void gravaDados() {
   if (dataFile) {
     String dataString = String(dados.tensao) +
                         "," + String(dados.corrente) +
-                        "," + String(dados.velocidade);
-    "," + String(dados.hodometro);
-    "," + String(dados.temperaturaBaterias) +
-    "," + String(dados.temperaturaCockpit);
+                        "," + String(dados.potencia) +
+                        "," + String(dados.energia) +
+                        "," + String(dados.velocidade) +
+                        "," + String(dados.hodometro) +
+                        "," + String(dados.temperaturaBaterias) +
+                        "," + String(dados.temperaturaCockpit);
     dataFile.println(dataString);
     dataFile.close();
   } else {
@@ -149,18 +231,6 @@ void gravaDados() {
     salvarDados = false;
     enviar("20", "Nao consegui abrir o arquivo, parando de gravar!");
   }
-}
-
-void incrementaPulso() {
-  pulsos++;
-  dados.hodometro += (2.0 * 3.1415 * cfg.raioRoda) / cfg.qtdPulsos;
-}
-
-void contarPulsos() {
-  noInterrupts();
-  dados.velocidade = ((2.0 * 3.1415 * cfg.raioRoda * pulsos) / (cfg.qtdPulsos)) * 3.6;
-  pulsos = 0;
-  interrupts();
 }
 
 void chaveiaRele(bool estado) {
@@ -182,6 +252,8 @@ void enviaDados()
   enviar("01", String(dados.tensao));
   enviar("02", String(dados.corrente));
   enviar("03", String(dados.velocidade));
+  //enviar("20", "Potencia " + String(dados.potencia));
+  //enviar("20", "Energia " + String(dados.energia));
   enviar("04", String(dados.hodometro));
   if (abs(temperaturaBateriasAnterior - dados.temperaturaBaterias) >= STEP_TEMPERATURA) {
     enviar("05", String(dados.temperaturaBaterias));

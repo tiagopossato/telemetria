@@ -1,22 +1,22 @@
-const int buttonPin = 9;     // the number of the pushbutton pin
-const int ledVermelho =  8;      // the number of the LED pin
-const int ledVerde =  7;      // the number of the LED pin
+const uint8_t botao = 9;
+unsigned long lastDebounceTime = 0;
+uint8_t debounceDelay = 50;
+uint8_t lastButtonState = LOW;
 
+const uint8_t ledVermelho =  8;
+const uint8_t ledVerde =  7;
 
 //estrutura com os dados lidos
 struct {
   float tensao;
   float corrente;
+  float potencia;
+  float energia;
   float temperaturaBaterias;
   float temperaturaCockpit;
-  long pulsosPorSegundo;
+  float velocidade; //velocidade calculada do carro
+  float hodometro; //armazena a quantidade de metros percorridos
 } dados;
-
-//estrutura com as configuracoes do controlador
-struct {
-  long intervaloLeitura; //intervalo de leitura dos sensores
-} cfg;
-
 
 void enviar(String cod, String msg) {
   Serial.println(" {\"" + cod + "\":\"" + msg + "\"}");
@@ -40,11 +40,7 @@ boolean abreCartao(boolean forcar) {
     cartaoOK = SD.begin(chipSelect);
     if (!cartaoOK) {
       enviar("20", "Erro ao abrir o cartao SD!");
-      digitalWrite(ledVermelho, HIGH);
-    } else {
-      digitalWrite(ledVermelho, LOW);
     }
   }
-
   return cartaoOK;
 }
