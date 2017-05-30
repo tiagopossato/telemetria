@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <SD.h>
-#include <TimerOne.h>
+//#include <TimerOne.h>
 #include "telemetria.h"
 
 //DIFERENCA DE TEMPERATURA PARA ENVIAR PELA SERIAL
@@ -10,7 +10,7 @@
 #define INTERVALO 100
 
 //raio da roda em metros
-#define CIRCUNFERENCIA_RODA 0.261
+#define CIRCUNFERENCIA_RODA 1.255
 
 //Quantidade de imãs na roda
 #define PULSOS  4
@@ -99,6 +99,9 @@ void loop() {
       enviar("20", "Parando de gravar...");
     }
     else {
+      dados.hodometro = 0;
+      dados.velocidade = 0;
+      dados.energia = 0;
       salvarDados = true;
       enviar("20", "Gravando...");
     }
@@ -163,21 +166,25 @@ void serialEvent() {
    Calcula Energia consumida
 */
 void calculaEnergia() {
-  static float potenciaAnterior = 0.0;
+  //static float potenciaAnterior = 0.0;
   dados.potencia = dados.tensao * dados.corrente;
-  potenciaAnterior = (potenciaAnterior + dados.potencia) / 2.0;
-  dados.energia += potenciaAnterior / 1000.0 / INTERVALO * 3600.0 ;
+  //potenciaAnterior = (potenciaAnterior + dados.potencia) / 2.0;
+  //dados.energia += potenciaAnterior / 1000.0 / INTERVALO * 3600.0 ;
+  dados.energia += dados.potencia * (1.0 / INTERVALO);
 }
 
 void calculaVelocidade() {
   unsigned long intervalo;
+  noInterrupts();
   tempoAtual = micros();
+  interrupts();
   intervalo = tempoAtual - tempoAnterior;
   if (intervalo > 0) {
-    dados.velocidade = DISTANCIA_PULSO / (intervalo * 1000000.0);
+    dados.velocidade = DISTANCIA_PULSO * (1000000 / intervalo) * 3.6;
   }
   tempoAnterior = tempoAtual;
   dados.hodometro += DISTANCIA_PULSO;
+
 }
 
 
@@ -193,6 +200,7 @@ void lerSensores() {
   for (int i = 0; i < AMOSTRAS; i++) lido += analogRead(pinoCorrente);
   //converte e aplica curva de calibração
   dados.corrente = converte((float) lido / AMOSTRAS, 0.0, 1023.0, -30.0, 30.0) * 1.25;
+  dados.corrente = constrain(dados.corrente, 0.0, 30.0);
 
   //temperatura
   lido = 0;
