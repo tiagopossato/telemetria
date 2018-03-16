@@ -39,7 +39,7 @@ const byte pinoVelocidade = 3;
 String inputCodigo = "";
 String arquivo;//nome do arquivo
 
-long intervaloEnvio;
+long intervaloEnvio = 1000;
 
 byte codigo = 0;
 boolean salvarDados = false;
@@ -81,6 +81,7 @@ void setup() {
 void loop() {
   static unsigned long previousMillisLeitura = 0;
   static unsigned long previousMillisExibicao = 0;
+
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillisLeitura >= INTERVALO) {
     previousMillisLeitura = currentMillis;
@@ -91,6 +92,15 @@ void loop() {
   if (currentMillis - previousMillisExibicao >= intervaloEnvio) {
     previousMillisExibicao = currentMillis;
     if (enviarDados) enviaDados();
+    String dataString = String(dados.tensao) +
+                        "," + String(dados.corrente) +
+                        "," + String(dados.potencia) +
+                        "," + String(dados.energia) +
+                        "," + String(dados.velocidade) +
+                        "," + String(dados.hodometro) +
+                        "," + String(dados.temperaturaBaterias) +
+                        "," + String(dados.temperaturaCockpit);
+    Serial.println(dataString);
   }
 
   if (!digitalRead(botao)) {
@@ -111,36 +121,6 @@ void loop() {
   //filtro digital
   while (!digitalRead(botao))delay(10);
 
-  /*
-    //se o botão for pressionado
-    boolean reading = !digitalRead(botao);
-
-    // se o valor da chave mudou, por ter sido pressionada ou pelo ruído
-    if (reading != lastButtonState) {
-      // reset o temporizador de debounce
-      lastDebounceTime = millis();
-    }
-
-    if ((millis() - lastDebounceTime) > debounceDelay) {
-      //se já passou o tempo de debounce
-      // se o estado do botão mudou
-      //if (reading != salvarDados) {
-      //salvarDados = reading;
-      if (salvarDados) {
-        salvarDados = false;
-      }
-      else {
-        salvarDados = true;
-      }
-      //}
-    }
-
-    // save the reading.  Next time through the loop,
-    // it'll be the lastButtonState:
-    // lastButtonState = reading;
-
-    //  digitalWrite(ledVerde, salvarDados);
-  */
 }
 
 /*
@@ -227,6 +207,7 @@ void gravaDados() {
                         "," + String(dados.temperaturaBaterias) +
                         "," + String(dados.temperaturaCockpit);
     dataFile.println(dataString);
+    Serial.println(dataString);
     dataFile.close();
   } else {
     contador++;
