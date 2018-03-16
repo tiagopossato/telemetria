@@ -75,6 +75,14 @@ void setup() {
   // initialize the pushbutton pin as an INPUT_PULLUP:
   pinMode(botao, INPUT_PULLUP);
 
+  //pisca led vermelho
+  for (char i = 0; i < 2; i++) {
+    digitalWrite(ledVermelho, HIGH);
+    delay(500);
+    digitalWrite(ledVermelho, LOW);
+    delay(500);
+  }
+
 }
 
 
@@ -119,7 +127,7 @@ void loop() {
   }
 
   //filtro digital
-  while (!digitalRead(botao))delay(10);
+  while (!digitalRead(botao))delay(100);
 
 }
 
